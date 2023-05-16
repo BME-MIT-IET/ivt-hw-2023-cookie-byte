@@ -16,6 +16,8 @@ The following screenshot is the result of analyzing the JavaScript code. There a
 The below screenshot is taken on the "Security" tab of GitHub. One vulnerability (XSS) is detected during analysis so we created an issue for it.
 ![](codeql2.PNG)
 
+We can define arbitrary queries for more specific purpose, however, the above one is utilized through the default setting when we worked on the GitHub workflow.
+
 ## References:
 <a id="1">[1]</a>
 CodeQL. (n.d.). Retrieved May 16, 2023, from https://codeql.github.com/
