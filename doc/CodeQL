@@ -1,0 +1,5 @@
+# CodeQL
+CodeQL is a powerful static analysis tool developed by GitHub developers. 
+Its main usage is to perform code analysis and identify potential security vulnerabilities, bugs, 
+and code quality issues in big software projects or even a small ones. CodeQL allows developers to write queries 
+to analyze codebases and detect various types of issues, including security vulnerabilities, data leaks, code smells, and more.
