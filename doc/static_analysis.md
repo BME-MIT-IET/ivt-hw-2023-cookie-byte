@@ -26,6 +26,8 @@ Analogous to the above.
 ![](static_analysis_ss/warning4.PNG)
 
 
+After manually inspecting above warnings, we published a GitHub issue with name "SonarQube".
+
 ## References:
 <a id="1">[1]</a> 
 SonarQube 10.0. (n.d.-b). SonarQube Documentation. Retrieved May 4, 2023, from https://docs.sonarqube.org/latest/
