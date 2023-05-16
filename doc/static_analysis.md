@@ -1,6 +1,6 @@
 ## SonarQube
 
-We used static one of analysis technologies, SonarQube/SonarLint [[1]](#1).
+We used one of static analysis technologies, SonarQube/SonarLint [[1]](#1).
 
 
 5 warnings are found from the given text (url.js) as follows:
