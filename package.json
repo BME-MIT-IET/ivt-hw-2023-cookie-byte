@@ -39,9 +39,11 @@
   },
   "github": "https://github.com/Mikhus/domurl",
   "devDependencies": {
+    "@cucumber/cucumber": "^9.1.2",
+    "cucumber": "^6.0.7",
     "jscs": "^3.0.7",
     "jshint": "^2.11.0",
-    "mocha": "^7.1.1",
+    "mocha": "^7.2.0",
     "uglify-js": "^3.8.1"
   }
 }
