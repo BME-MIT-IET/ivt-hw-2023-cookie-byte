@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  ivthw2023cookiebyte:
+    image: ivthw2023cookiebyte
+    build:
+      context: .
+      dockerfile: ./Dockerfile
