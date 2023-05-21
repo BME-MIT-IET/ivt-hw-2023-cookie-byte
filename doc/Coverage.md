@@ -7,7 +7,9 @@ Istanbul runs with Mocha. After installing it, *nyc* command should be added to 
 # Pre- and Post- Coverages
 
 Before extending the unit tests:
+
 ![](Screenshots/preCoverage.png)
 
 After:
+
 ![](Screenshots/Coverage.png)
