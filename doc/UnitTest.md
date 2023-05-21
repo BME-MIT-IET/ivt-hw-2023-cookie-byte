@@ -5,3 +5,5 @@
  Added Tests for handling empty arrays, the Props Interface, Path Decoding/Encoding special cases, and the isEmptyQuery() function.
  
  Commands to run tests: $ npm test
+
+ ![](Screenshots/testsReport.png)
