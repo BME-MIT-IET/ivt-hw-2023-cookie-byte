@@ -20,7 +20,7 @@
   },
   "main": "url.min.js",
   "scripts": {
-    "test": "mocha ./test/url.js",
+    "test": "nyc mocha ./test/url.js",
     "minify": "./node_modules/uglify-js/bin/uglifyjs url.js --output url.min.js --compress --mangle"
   },
   "maintainers": [

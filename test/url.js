@@ -5,7 +5,7 @@ const fs = require('fs');
 const p = require('path');
 const Url = require('../url.min.js');
 
-function sanitizeURL (url) {
+function sanitizeURL(url) {
     var u = new Url(url, true);
 
     if (u.query['reload']) {
@@ -44,16 +44,17 @@ describe('Url()', function () {
         const u = new Url();
         assert.equal(u instanceof Url, true);
     });
+
     it('should match current dir when construct with no argument', function () {
         const u = new Url();
-        const dir = u.path.replace(/\//g, p.sep);
+        let dir = u.path.replace(/\//g, p.sep);
         process.platform.match(/^win/) && (dir = dir.substr(1));
         assert.equal(dir, fs.realpathSync('.'));
     });
     it('should keep URL without transformations if requested', function () {
         assert.equal(
-          sanitizeURL('/SearchResults?search=new&make=Buick&year=2016&forceReload=true'),
-          '/SearchResults?search=new&make=Buick&year=2016'
+            sanitizeURL('/SearchResults?search=new&make=Buick&year=2016&forceReload=true'),
+            '/SearchResults?search=new&make=Buick&year=2016'
         );
     });
     it('should test absolutize url', function () {
@@ -70,6 +71,23 @@ describe('Url.clearQuery()', function () {
         const url = new Url('http://example.com/?a&a=&b=&c=&d=&e=&f=&g=&h#foo');
         url.clearQuery();
         assert.equal('http://example.com/#foo', url.toString());
+    });
+    it('should remove all query parameters from the URL', function () {
+        const url = new Url('http://example.com/?param1=value1&param2=value2&param3=value3');
+        url.clearQuery();
+        assert.equal(url.toString(), 'http://example.com/');
+    });
+    
+      it('should preserve other parts of the URL', function () {
+        const url = new Url('http://example.com/path?param1=value1#fragment');
+        url.clearQuery();
+        assert.equal(url.toString(), 'http://example.com/path#fragment');
+    });
+    
+      it('should not modify the URL if it does not have any query parameters', function () {
+        const url = new Url('http://example.com/');
+        url.clearQuery();
+        assert.equal(url.toString(), 'http://example.com/');
     });
 });
 
@@ -95,6 +113,13 @@ describe('Url.queryLength()', function () {
         queryLength = url.queryLength();
         assert.equal(queryLength, 3);
     });
+    
+    it('should count each query parameter once, even if it appears multiple times', function () {
+        const url = new Url('http://example.com/?param1=value1&param1=value2&param1=value3');
+        const queryLength = url.queryLength();
+        assert.equal(queryLength, 1);
+    });
+
 });
 
 describe('Url.query.toString()', function () {
@@ -141,6 +166,16 @@ describe('Url.query.toString()', function () {
         u.query.a[1] = null;
         assert.equal(u.toString(), originalStr);
     });
+
+    it('should produce an empty value for an empty array property in the query string', function () {
+        const originalUrl = 'http://localhost/?a&a&a';
+        const url = new Url(originalUrl);
+      
+        url.query.a = [];
+      
+        const expectedUrl = 'http://localhost/?a=';
+        assert.equal(url.toString(), expectedUrl);
+      });
 });
 
 describe('Url props interface', function () {
@@ -158,12 +193,23 @@ describe('Url props interface', function () {
         assert.equal(u.hash, 'anchor');
         assert.equal(str, u.toString());
     });
+
+    it('should correctly parse and return the URL properties', function () {
+        const url = new Url('https://example.com:8080/path/to/resource?param1=value1#fragment');
+    
+        assert.equal(url.protocol, 'https');
+        assert.equal(url.host, 'example.com');
+        assert.equal(url.port, '8080');
+        assert.equal(url.path, '/path/to/resource');
+        assert.equal(url.query, 'param1=value1');
+        assert.equal(url.hash, 'fragment');
+      });
 });
 
 describe('Path url encoding', function () {
     it('should correctly encode whitespace as %20', function () {
         const u = new Url('http://localhost/path with space');
-        assert.equal(u.toString(),'http://localhost/path%20with%20space');
+        assert.equal(u.toString(), 'http://localhost/path%20with%20space');
     });
     // TODO: Fix https://github.com/Mikhus/domurl/issues/49
     xit('should correctly encode Plus Sign (+) to %2b in path.', function () {
@@ -173,5 +219,63 @@ describe('Path url encoding', function () {
     xit('should preserve Plus Sign (+) in path.', function () {
         const u = new Url('http://localhost/path+with+plus');
         assert.equal(u.toString(), 'http://localhost/path%2bwith%2bplus');
+    });
+    it('should correctly encode random characters in the path', function () {
+        const url = new Url('http://example.com/my-path/ḟøø-ßαя');
+        const expectedUrl = 'http://example.com/my-path/%E1%B8%9F%C3%B8%C3%B8-%C3%9F%CE%B1%D1%8F';
+        assert.equal(url.toString(), expectedUrl);
+      });      
+    it('should correctly encode random characters in the path', function () {
+        const url = new Url('http://example.com/my-path/႓ለሊ');
+        const expectedUrl = 'http://example.com/my-path/%E1%82%93%E1%88%88%E1%88%8A';
+        assert.equal(url.toString(), expectedUrl);
+    })
+      
+});
+
+describe('Path url decoding', function () {
+    it('should preserve non-existing characters (2-HEX)', function () {
+      const url = new Url('http://example.com/path-with-%C1%80');
+      const expectedUrl = 'http://example.com/path-with-%C1%80';
+      assert.equal(Url.prototype.decode(url.toString()), expectedUrl);
+    });
+  
+    it('should preserve non-existing characters (3-HEX)', function () {
+      const url = new Url('http://example.com/path-with-%E0%80%80');
+      const expectedUrl = 'http://example.com/path-with-%E0%80%80';
+      assert.equal(Url.prototype.decode(url.toString()), expectedUrl);
+    });
+  });
+
+describe('Url.isEmptyQuery()', function () {
+    it('should return true if no parameters in the query string', function () {
+        const urlWithParams = new Url('http://example.com/?key1=value1');
+        const urlWithoutParams = new Url('http://example.com/');
+      
+        const hasParams = urlWithParams.isEmptyQuery();
+        const noParams = urlWithoutParams.isEmptyQuery();
+      
+        assert.equal(hasParams, false);
+        assert.equal(noParams, true);
+      });
+      
+
+    it('should handle empty query string', function () {
+        const url = new Url('http://localhost/?');
+        assert.equal(url.isEmptyQuery(), true);
+    });
+
+    it('should handle empty parameter values correctly', function () {
+        const url = new Url('http://example.com/?param1=&param2=&param3=');
+        const isEmpty = url.isEmptyQuery();
+        assert.equal(isEmpty, false);
+    });
+});
+
+describe('Url.toString()', function () {
+    it('should return the string representation of the URL', function () {
+      const url = new Url('https://example.com:8080/path/to/resource?param1=value1#fragment');
+      const urlString = url.toString();
+      assert.equal(urlString, 'https://example.com:8080/path/to/resource?param1=value1#fragment');
     });
 });
