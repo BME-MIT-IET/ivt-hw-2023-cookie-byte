@@ -9,12 +9,12 @@ CodeQL is different from the traditional static analysis technologies as it will
 # Workflow
 
 The following screenshot is the result of analyzing the JavaScript code. There are no integration-related errors.
-![](codeql1.PNG)
+![](./Screenshots/codeql1.PNG)
 
 # Security risks
 
 The below screenshot is taken on the "Security" tab of GitHub. One vulnerability (XSS) is detected during analysis so we created an issue for it.
-![](codeql2.PNG)
+![]( ./Screenshots/codeql2.PNG)
 
 We can define arbitrary queries for more specific purpose, however, the above one is utilized through the default setting when we worked on the GitHub workflow.
 
